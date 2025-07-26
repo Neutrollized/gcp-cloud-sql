@@ -18,9 +18,10 @@ resource "google_sql_database_instance" "main" {
     edition               = var.edition
     connector_enforcement = var.connector_enforcement
 
-    disk_autoresize = var.disk_autoresize
-    disk_size       = var.disk_size
-    disk_type       = var.disk_type
+    disk_autoresize       = var.disk_autoresize
+    disk_autoresize_limit = var.disk_autoresize_limit
+    disk_size             = var.disk_size
+    disk_type             = var.disk_type
 
     enable_dataplex_integration  = var.enable_dataplex_integration
     enable_google_ml_integration = var.enable_vertexai_integration
@@ -36,11 +37,24 @@ resource "google_sql_database_instance" "main" {
 
   lifecycle {
     precondition {
+      condition     = var.edition == "ENTERPRISE" || var.edition == "ENTERPRISE_PLUS" && contains(["MYSQL_8_0", "MYSQL_8_4", "POSTGRES_12", "POSTGRES_13", "POSTGRES_14", "POSTGRES_15", "POSTGRES_16", "POSTGRES_17"], var.db_version)
+      error_message = "Selected db_version is not supported by ENTERPRISE_PLUS edition"
+    }
+    precondition {
       condition     = (startswith(var.disk_type, "PD_") && var.disk_size >= 10) || (startswith(var.disk_type, "HYPERDISK_") && var.disk_size >= 20)
       error_message = "If disk type is a HYPERDISK, the disk_size should be at least 20GB"
+    }
+    precondition {
+      condition     = (var.disk_autoresize == true && var.disk_autoresize_limit == 0) || (var.disk_autoresize == true && var.disk_autoresize_limit > var.disk_size) || var.disk_autoresize == false
+      error_message = "Your specified disk_autoresize_limit should be greater than your disk_size"
     }
     ignore_changes = [
       settings[0].disk_size,
     ]
   }
+}
+
+resource "google_sql_database" "database" {
+  name     = var.sql_database_name
+  instance = google_sql_database_instance.main.name
 }

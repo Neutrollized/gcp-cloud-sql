@@ -29,6 +29,15 @@ variable "sql_user" {
 
 
 #-----------------------
+# database
+#-----------------------
+variable "sql_database_name" {
+  description = "Database name"
+  type        = string
+}
+
+
+#-----------------------
 # Cloud SQL instance
 #-----------------------
 variable "sql_instance_name" {
@@ -90,6 +99,13 @@ variable "disk_autoresize" {
   type        = bool
   default     = true
 }
+
+variable "disk_autoresize_limit" {
+  description = "Max size to which storage can be automatically increased. 0 means unlimited"
+  type        = number
+  default     = 0
+}
+
 variable "disk_size" {
   description = "Size of data disk in GB"
   type        = number
