@@ -18,16 +18,24 @@ variable "zone" {
   default     = "us-central1-c"
 }
 
-variable "sql_instance_name" {
-  description = "Cloud SQL instance name"
+
+#-----------------------
+# Cloud SQL user
+#-----------------------
+variable "sql_user" {
+  description = "Database user"
   type        = string
 }
 
-variable "machine_type" {
-  description = "Cloud SQL instance tier machine type."
+
+#-----------------------
+# Cloud SQL instance
+#-----------------------
+variable "sql_instance_name" {
+  description = "Cloud SQL instance name prefix"
   type        = string
-  default     = "g1-small"
 }
+
 
 variable "db_version" {
   description = "The MySQL or PostgreSQL version."
@@ -39,6 +47,22 @@ variable "db_version" {
   }
 }
 
+
+#------------------------------
+# Cloud SQL settings
+#------------------------------
+variable "deletion_protection_enabled" {
+  description = "Protection against accidental deletion. Applies to API, gcloud, Cloud Console, and Terraform."
+  type        = bool
+  default     = true
+}
+
+variable "machine_type" {
+  description = "Cloud SQL instance tier machine type."
+  type        = string
+  default     = "g1-small"
+}
+
 variable "edition" {
   description = "Edition of the instance."
   type        = string
@@ -48,4 +72,49 @@ variable "edition" {
     condition     = contains(["ENTERPRISE", "ENTERPRISE_PLUS"], var.edition)
     error_message = "Accepted values are ENTERPRISE or ENTERPRISE_PLUS"
   }
+}
+
+variable "connector_enforcement" {
+  description = "Control enforcement of Cloud SQL Auth Proxy or Cloud SQL connectors for connections."
+  type        = string
+  default     = "REQUIRED"
+
+  validation {
+    condition     = contains(["REQUIRED", "NOT_REQUIRED"], var.connector_enforcement)
+    error_message = "Accepted values are REQUIRED or NOT_REQUIRED"
+  }
+}
+
+variable "disk_autoresize" {
+  description = "Enables auto-resizing of storage size"
+  type        = bool
+  default     = true
+}
+variable "disk_size" {
+  description = "Size of data disk in GB"
+  type        = number
+  default     = 10
+}
+
+variable "disk_type" {
+  description = "Type of data disk"
+  type        = string
+  default     = "PD_SSD"
+
+  validation {
+    condition     = contains(["PD_SSD", "PD_HDD", "HYPERDISK_BALANCED"], var.disk_type)
+    error_message = "Accepted values are PD_SSD, PD_HDD, or HYPERDISK_BALANCED"
+  }
+}
+
+variable "enable_dataplex_integration" {
+  description = "Enable integration with Dataplex"
+  type        = bool
+  default     = false
+}
+
+variable "enable_vertexai_integration" {
+  description = "Enable integration with Vertex AI"
+  type        = bool
+  default     = false
 }
