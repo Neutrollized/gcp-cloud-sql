@@ -21,7 +21,7 @@ This varies depending on the edition you're using, but *ENTERPRISE_PLUS* will ha
 gcloud sql tiers list --filter=AVAILABLE_REGIONS=[YOUR_REGION_HERE]
 ```
 
-**RECOMMENDED**: Although `f1-micro` works okay, I *highly* recommend starting out with the `g1-small` as the minimum (which is what I set as the default `machine_type`). The `f1-micro` takes quite a bit longer to provision due to how little memory it has. I think the `g1-small` strikes a good balance between usability and cost, but if you don't mind waiting 3-4x longer for the `f1-micro`, then by all means :)
+**RECOMMENDED**: Although `f1-micro` works okay (it's the current default `machine_type`), I *highly* recommend starting out with the `g1-small` for a better overall experience. The `f1-micro` takes quite a bit longer to provision due to how little memory it has. I think the `g1-small` strikes a good balance between usability and cost, but if you don't mind waiting 3-4x longer for the `f1-micro`, then by all means :)
 
 
 ## Database Flags

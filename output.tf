@@ -10,6 +10,10 @@ output "_03_client_connection_string" {
   value = startswith(var.db_version, "POSTGRES") ? "psql -U ${google_sql_user.db_user.name} -h 127.0.0.1 -p 5432 -d ${google_sql_database.database.name}" : "mysql -u ${google_sql_user.db_user.name} -h 127.0.0.1 --get-server-public-key --port=3306 -p ${google_sql_database.database.name}"
 }
 
+output "_04_cleanup" {
+  value = "Don't forget to kill the Cloud SQL Auth Proxy running in the background when you're done!"
+}
+
 output "change_user_password" {
   value = "gcloud sql users set-password ${google_sql_user.db_user.name} --instance=${google_sql_database_instance.main.name} --prompt-for-password"
 }

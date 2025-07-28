@@ -48,7 +48,7 @@ variable "sql_instance_name" {
 variable "machine_type" {
   description = "Cloud SQL instance tier machine type."
   type        = string
-  default     = "g1-small"
+  default     = "f1-micro"
 }
 
 variable "edition" {
