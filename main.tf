@@ -1,7 +1,15 @@
-resource "random_pet" "sql_instance_suffix" {
-  length = 2
+data "google_compute_network" "default_network" {
+  name    = "default"
+  project = var.project_id
 }
 
+
+# need to generate a unique suffix for Cloud SQL sql instance 
+# as the name cannot be reused for ~7 days after deletion
+resource "random_pet" "sql_instance_suffix" {
+  length    = 2
+  separator = "-"
+}
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance
 resource "google_sql_database_instance" "main" {
@@ -14,6 +22,8 @@ resource "google_sql_database_instance" "main" {
 
     # Second-generation instance tiers are based on the machine type
     # i.e. "db-f1-micro"
+    # There's more high-perf tiers that are named differently,
+    # see the full list with `gcloud sql tiers list`
     tier                  = "db-${var.machine_type}"
     edition               = var.edition
     connector_enforcement = var.connector_enforcement
@@ -26,9 +36,31 @@ resource "google_sql_database_instance" "main" {
     enable_dataplex_integration  = var.enable_dataplex_integration
     enable_google_ml_integration = var.enable_vertexai_integration
 
-    #    ip_configuration {
-    #  ipv4_enabled = true
-    #}
+    dynamic "database_flags" {
+      for_each = var.database_flags
+      content {
+        name  = database_flags.value["name"]
+        value = database_flags.value["value"]
+      }
+    }
+
+    ip_configuration {
+      ipv4_enabled                                  = true
+      private_network                               = data.google_compute_network.default_network.id
+      ssl_mode                                      = var.ssl_mode
+      enable_private_path_for_google_cloud_services = true
+
+      dynamic "authorized_networks" {
+        for_each = var.authorized_networks
+        content {
+          # 'name' is technically optional, but I'm making it required in my case
+          name            = authorized_networks.value["name"]
+          value           = authorized_networks.value["value"]
+          expiration_time = contains(keys(authorized_networks.value), "expiration_time") ? authorized_networks.value["expiration_time"] : null
+        }
+      }
+
+    }
   }
 
   # need to set and "terraform apply" before you can delete
