@@ -10,8 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Variable `ipv4_enabled` (default: `true`)
 - Variable `enable_private_path_for_gcp_services` (default: `false`)
 - Output public IP of Cloud SQL instance if one exists
+- `examples/mysql_client.py` for testing connectivity
 ### Changed
 - Switched from `cloud_sql_proxy` (v1) to a simpler `cloud-sql-proxy` (v2) command for connecting to the Cloud SQL instance
+- Renamed `examples/python_client.py` to `examples/psql_client.py`
 
 ## [0.2.0] - 2025-07-28
 ### Added
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dynamic block for `database_flags`
 - Dynamic block for `authorized_networks`
 - Variable, `ssl_mode` (default: `ENCYRYPTED_ONLY`)
-- `examples/python_client.py` for testing connectivity to public IP
+- `examples/python_client.py` for testing connectivity
 - `terraform.tfvars.sample`
 ### Changed
 - Default `machine_type` from `g1-small` to `f1-micro`
