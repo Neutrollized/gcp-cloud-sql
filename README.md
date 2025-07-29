@@ -31,13 +31,68 @@ Database flags can be used to further tune your database instance by adjusting s
 - [Postgres supported flags](https://cloud.google.com/sql/docs/postgres/flags#list-flags-postgres)
 
 
-## MySQL connection troubleshooting
+## Connected to Cloud SQL
+### Cloud SQL Auth Proxy
+Unless there's some reason why you can't, `cloud-sql-proxy` is probably the best way to connect to your Cloud SQL instance. I installed `cloud-sql-proxy` via Google Cloud SDK:
+```
+gcloud components install cloud-sql-proxy
+```
+
+**IMPORTANT**: If you have an existing `cloud_sql_proxy` (with underscores) in your path, that's v1, while `cloud-sql-proxy` (with dashes) is v2
+
+You use `cloud-sql-proxy` to securely connect to your instance via the instance connection name (format: `PROJECT_ID:REGION_NAME:INSTANCE_NAME`). It will handle the authorization and encryption for you and all you have to do is connect to 127.0.0.1 as the database host and authenticate!
+
+
+### MySQL connection troubleshooting
+#### MySQL Client v8.4.x on Debian
+Make sure you're using MySQL client v8.4.x.:
+```
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.34-1_all.deb
+
+sudo apt install ./mysql-apt-config_0.8.34-1_all.deb
+```
+
+**NOTE**: There may be a newer version of the MySQL APT Config. For more information, see [here](https://dev.mysql.com/doc/refman/8.0/en/installing.html)
+
+Answer `OK` to the TUI prompts, and once you're back in the terminal:
+```
+sudo apt-get update
+
+sudo apt-get install mysql-client
+```
+
+- verify your client version:
+```
+$ mysql --version
+mysql  Ver 8.4.6 for Linux on x86_64 (MySQL Community Server - GPL)
+```
+
+#### `caching_sha2_password` Error
 If you run into the error below when trying to connect to your Cloud SQL MySQL server using the Cloud SQL Auth Proxy, the complaint is not about the connection between the auth proxy and Cloud SQL server, but rather between your client and the auth proxy itself.  Hence why in the client connection string I added the `--get-server-public-key` flag:
 
-- sample error:
+- error:
 ```
 ERROR 2061 (HY000): 2025/07/26 09:14:34 Client closed local connection on 127.0.0.1:3306
 Authentication plugin 'caching_sha2_password' reported error: Authentication requires secure connection.
+```
+
+- solution:
+```
+$ mysql -u myuser -h 127.0.0.1 --get-server-public-key --port=3306 -p mydb01
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 283
+Server version: 8.4.5-google (Google)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
 ```
 
 

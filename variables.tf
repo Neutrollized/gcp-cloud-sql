@@ -153,6 +153,12 @@ variable "database_flags" {
   ]
 }
 
+variable "ipv4_enabled" {
+  description = "Whether a public IP address is assigned"
+  type        = bool
+  default     = true
+}
+
 variable "authorized_networks" {
   description = "List of authorized networks allowed to connnect to public IP. 'expiration_time' is optional"
   type        = list(map(string))
@@ -174,4 +180,10 @@ variable "ssl_mode" {
     condition     = contains(["ALLOW_UNENCRYPTED_AND_ENCRYPTED", "ENCRYPTED_ONLY", "TRUSTED_CLIENT_CERTIFICATE_REQUIRED"], var.ssl_mode)
     error_message = "Accepted values are ALLOW_UNENCRYPTED_AND_ENCRYPTED, ENCRYPTED_ONLY, and TRUSTED_CLIENT_CERTIFICATE_REQUIRED"
   }
+}
+
+variable "enable_private_path_for_gcp_services" {
+  description = "Whether GCP services such as BigQuery are allowed access to data in this instance over a private IP connection"
+  type        = bool
+  default     = false
 }

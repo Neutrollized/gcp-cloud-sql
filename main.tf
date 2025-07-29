@@ -45,10 +45,10 @@ resource "google_sql_database_instance" "main" {
     }
 
     ip_configuration {
-      ipv4_enabled                                  = true
+      ipv4_enabled                                  = var.ipv4_enabled
       private_network                               = data.google_compute_network.default_network.id
       ssl_mode                                      = var.ssl_mode
-      enable_private_path_for_google_cloud_services = true
+      enable_private_path_for_google_cloud_services = var.enable_private_path_for_gcp_services
 
       dynamic "authorized_networks" {
         for_each = var.authorized_networks

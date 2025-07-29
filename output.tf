@@ -1,5 +1,5 @@
 output "_01_cloud_sql_proxy_command" {
-  value = startswith(var.db_version, "POSTGRES") ? "cloud_sql_proxy -instances=${google_sql_database_instance.main.connection_name}=tcp:0.0.0.0:5432 &" : "cloud_sql_proxy -instances=${google_sql_database_instance.main.connection_name}=tcp:0.0.0.0:3306 &"
+  value = google_sql_database_instance.main.settings[0].ip_configuration[0].ipv4_enabled == true ? "cloud-sql-proxy --quiet ${google_sql_database_instance.main.connection_name} &" : "cloud-sql-proxy --quiet --private-ip ${google_sql_database_instance.main.connection_name} &"
 }
 
 output "_02_get_user_password" {
@@ -16,4 +16,12 @@ output "_04_cleanup" {
 
 output "change_user_password" {
   value = "gcloud sql users set-password ${google_sql_user.db_user.name} --instance=${google_sql_database_instance.main.name} --prompt-for-password"
+}
+
+output "sql_instance_public_ip" {
+  value = google_sql_database_instance.main.settings[0].ip_configuration[0].ipv4_enabled == true ? google_sql_database_instance.main.public_ip_address : "N/A - no public IP assigned"
+}
+
+output "sql_instance_private_ip" {
+  value = google_sql_database_instance.main.settings[0].ip_configuration[0].private_network != null ? google_sql_database_instance.main.private_ip_address : "N/A - no private IP assigned"
 }

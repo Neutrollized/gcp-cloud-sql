@@ -8,18 +8,18 @@ sql_instance_name           = "sqltest"
 deletion_protection_enabled = false
 
 machine_type = "g1-small"
-edition      = "ENTERPRISE_PLUS"
+edition      = "ENTERPRISE"
 db_version   = "POSTGRES_16"
 
 disk_autoresize_limit = 25
 disk_size             = 20
-disk_type = "HYPERDISK_BALANCED"
+#disk_type = "HYPERDISK_BALANCED"
 
 connector_enforcement = "NOT_REQUIRED"
 authorized_networks = [
   {
     name  = "home"
     value = "123.45.67.89/32"
-    expiration_time = "2026-09-01T12:00:00.000Z"
+    expiration_time = "2025-09-01T12:00:00.000Z"
   }
 ]
