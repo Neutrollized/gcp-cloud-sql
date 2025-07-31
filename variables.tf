@@ -72,6 +72,17 @@ variable "db_version" {
   }
 }
 
+variable "availability_type" {
+  description = "High availability or single zone"
+  type        = string
+  default     = "ZONAL"
+
+  validation {
+    condition     = contains(["ZONAL", "REGIONAL"], var.availability_type)
+    error_message = "Accepted values are ZONAL or REGIONAL"
+  }
+}
+
 
 #------------------------------
 # Cloud SQL configuration
@@ -85,7 +96,7 @@ variable "deletion_protection_enabled" {
 variable "connector_enforcement" {
   description = "Control enforcement of Cloud SQL Auth Proxy or Cloud SQL connectors for connections."
   type        = string
-  default     = "REQUIRED"
+  default     = "NOT_REQUIRED"
 
   validation {
     condition     = contains(["REQUIRED", "NOT_REQUIRED"], var.connector_enforcement)
@@ -187,3 +198,13 @@ variable "enable_private_path_for_gcp_services" {
   type        = bool
   default     = false
 }
+
+variable "allowed_consumer_projects" {
+  description = "List of consumer projects allowed to connect via PSC"
+  type        = list(string)
+  default = [
+    #    some-project-123,
+    #    another-project-789,
+  ]
+}
+

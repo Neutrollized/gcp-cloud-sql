@@ -1,9 +1,3 @@
-data "google_compute_network" "default_network" {
-  name    = "default"
-  project = var.project_id
-}
-
-
 # need to generate a unique suffix for Cloud SQL sql instance 
 # as the name cannot be reused for ~7 days after deletion
 resource "random_pet" "sql_instance_suffix" {
@@ -18,6 +12,7 @@ resource "google_sql_database_instance" "main" {
   region           = var.region
 
   settings {
+    availability_type           = var.availability_type
     deletion_protection_enabled = var.deletion_protection_enabled
 
     # Second-generation instance tiers are based on the machine type
@@ -49,6 +44,14 @@ resource "google_sql_database_instance" "main" {
       private_network                               = data.google_compute_network.default_network.id
       ssl_mode                                      = var.ssl_mode
       enable_private_path_for_google_cloud_services = var.enable_private_path_for_gcp_services
+
+      dynamic "psc_config" {
+        for_each = length(var.allowed_consumer_projects) > 0 ? [1] : []
+        content {
+          psc_enabled               = true
+          allowed_consumer_projects = var.allowed_consumer_projects
+        }
+      }
 
       dynamic "authorized_networks" {
         for_each = var.authorized_networks

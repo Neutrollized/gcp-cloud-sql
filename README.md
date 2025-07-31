@@ -43,6 +43,16 @@ gcloud components install cloud-sql-proxy
 You use `cloud-sql-proxy` to securely connect to your instance via the instance connection name (format: `PROJECT_ID:REGION_NAME:INSTANCE_NAME`). It will handle the authorization and encryption for you and all you have to do is connect to 127.0.0.1 as the database host and authenticate!
 
 
+## Private Service Connect
+### Direct (IP)
+To connect directly to the PSC endpoint IP, make sure `connector_enforcement = "NOT_REQUIRED"` 
+
+### Direct (DNS name)
+To connect directly via DNS name, you need to create a [(Private) DNS Managed Zone](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_managed_zone) and [DNS Record Set ("A" record)](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_record_set)
+
+**IMPORTANT**: you will also need the DNS zone and record if you wish to use Cloud SQL Auth Proxy
+
+
 ### MySQL connection troubleshooting
 #### MySQL Client v8.4.x on Debian
 Make sure you're using MySQL client v8.4.x.:
@@ -97,8 +107,7 @@ mysql>
 
 
 ## TODO
-- custom VPC
-- Private Service Connect (PSC)
+- how do I use [Service Connection Policy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/network_connectivity_service_connection_policy) to make PSC easier?
 - connection pooling
 - backups/maintenance window
 - how to use integration features with other GCP services (i.e. Vertex AI)

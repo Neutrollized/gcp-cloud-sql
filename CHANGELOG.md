@@ -5,14 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
-## [0.2.1] - 2025-07-29
+## [0.3.0] - 2025-??-??
 ### Added
+- Private Service Connect (PSC) support (sample Terraform file: `psc_sample.tf`)
+- Variable `allowed_consumer_projects` (default: `[]`)
 - Variable `ipv4_enabled` (default: `true`)
 - Variable `enable_private_path_for_gcp_services` (default: `false`)
 - Output public IP of Cloud SQL instance if one exists
 - `examples/mysql_client.py` for testing connectivity
 ### Changed
+- Variable `connector_enforcement` default changed from `REQUIRED` to `NOT_REQUIRED`
 - Switched from `cloud_sql_proxy` (v1) to a simpler `cloud-sql-proxy` (v2) command for connecting to the Cloud SQL instance
+- Reorganized `output.tf` for improved readability
 - Renamed `examples/python_client.py` to `examples/psql_client.py`
 
 ## [0.2.0] - 2025-07-28
