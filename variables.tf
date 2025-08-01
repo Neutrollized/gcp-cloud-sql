@@ -154,12 +154,12 @@ variable "database_flags" {
   type        = list(map(string))
   default = [
     #    {
-    #      name  = "autovacuum"
-    #      value = "off" # default: "on"
+    #      name  = "cloudsql.iam_authentication"  # postgres
+    #      value = "on"
     #    },
     #    {
     #      name  = "log_connections"
-    #      value = "on" # default: "off"
+    #      value = "on"
     #    }
   ]
 }
