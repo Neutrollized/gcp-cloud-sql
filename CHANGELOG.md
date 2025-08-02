@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Variable `connection_pooling_enabled` (default: `false`)
 - Variable `connection_pooling_flags` (default: `[]`)
 ### Changed
-- Variable `machine_type` changed to `machine_tiers` to better reflect the different naming formats
+- Variable `machine_type` changed to `machine_tier` to better reflect the different naming formats
 ### Fixed
 - Output locals errors when public IP and/or PSC not enabled
 
