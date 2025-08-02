@@ -25,13 +25,13 @@ output "cloud_sql_psc_svcattachment" {
 # all client connection commands go here for better organization & readability
 locals {
   psql_connect_cloudsqlproxy    = "psql -U ${google_sql_user.db_user.name} -h 127.0.0.1 -p 5432 -d ${google_sql_database.database.name}"
-  psql_connect_public_ip        = "psql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.public_ip_address} -p 5432 -d ${google_sql_database.database.name}"
-  psql_connect_private_ip       = "psql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.private_ip_address} -p 5432 -d ${google_sql_database.database.name}"
-  psql_connect_psc_endpoint_ip  = "psql -U ${google_sql_user.db_user.name} -h ${google_compute_address.default[0].address} -p 5432 -d ${google_sql_database.database.name}"
+  psql_connect_public_ip        = var.ipv4_enabled == true ? "psql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.public_ip_address} -p 5432 -d ${google_sql_database.database.name}" : null
+  psql_connect_private_ip       = google_sql_database_instance.main.settings[0].ip_configuration[0].private_network != null ? "psql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.private_ip_address} -p 5432 -d ${google_sql_database.database.name}" : null
+  psql_connect_psc_endpoint_ip  = length(var.allowed_consumer_projects) > 0 ? "psql -U ${google_sql_user.db_user.name} -h ${google_compute_address.default[0].address} -p 5432 -d ${google_sql_database.database.name}" : null
   mysql_connect_cloudsqlproxy   = "mysql -U ${google_sql_user.db_user.name} -h 127.0.0.1 --get-server-public-key --port=3306 -p ${google_sql_database.database.name}"
-  mysql_connect_public_ip       = "mysql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.public_ip_address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}"
-  mysql_connect_private_ip      = "mysql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.private_ip_address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}"
-  mysql_connect_psc_endpoint_ip = "mysql -U ${google_sql_user.db_user.name} -h ${google_compute_address.default[0].address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}"
+  mysql_connect_public_ip       = var.ipv4_enabled == true ? "mysql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.public_ip_address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}" : null
+  mysql_connect_private_ip      = google_sql_database_instance.main.settings[0].ip_configuration[0].private_network != null ? "mysql -U ${google_sql_user.db_user.name} -h ${google_sql_database_instance.main.private_ip_address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}" : null
+  mysql_connect_psc_endpoint_ip = length(var.allowed_consumer_projects) > 0 ? "mysql -U ${google_sql_user.db_user.name} -h ${google_compute_address.default[0].address} --get-server-public-key --port=3306 -p ${google_sql_database.database.name}" : null
 }
 
 output "_03_connect_client_via_CLOUDSQLPROXY" {

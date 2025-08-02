@@ -45,10 +45,10 @@ variable "sql_instance_name" {
   type        = string
 }
 
-variable "machine_type" {
+variable "machine_tier" {
   description = "Cloud SQL instance tier machine type."
   type        = string
-  default     = "f1-micro"
+  default     = "db-f1-micro"
 }
 
 variable "edition" {
@@ -208,3 +208,23 @@ variable "allowed_consumer_projects" {
   ]
 }
 
+variable "connection_pooling_enabled" {
+  description = "Whether Managed Connection Pooling is enabled"
+  type        = bool
+  default     = false
+}
+
+variable "connection_pooling_flags" {
+  description = "List of configuration options for managed connection pooling"
+  type        = list(map(string))
+  default = [
+    #    {
+    #      name  = "max_client_connections"
+    #      value = "1000"
+    #    },
+    #    {
+    #      name  = "max_pool_size"
+    #      value = "60"
+    #    }
+  ]
+}

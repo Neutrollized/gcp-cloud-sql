@@ -53,6 +53,28 @@ To connect directly via DNS name, you need to create a [(Private) DNS Managed Zo
 **IMPORTANT**: you will also need the DNS zone and record if you wish to use Cloud SQL Auth Proxy
 
 
+## Managed Connection Pooling
+Better scaling by optimizing resource utilization and connection latency for Cloud SQL.
+
+- sample config:
+```hcl
+    connection_pool_config {
+      connection_pooling_enabled = var.connection_pooling_enabled
+      flags {
+        name  = "max_client_connections"
+        value = "1000"
+      }
+      flags {
+        name  = "max_pool_size"
+        value = "60"
+      }
+    }
+```
+
+- [MySQL supported flags](https://cloud.google.com/sql/docs/mysql/managed-connection-pooling#configuration-options)
+- [PostgreSQL supported flags](https://cloud.google.com/sql/docs/postgres/managed-connection-pooling#configuration-options)
+
+
 ### MySQL connection troubleshooting
 #### MySQL Client v8.4.x on Debian
 Make sure you're using MySQL client v8.4.x.:
@@ -108,7 +130,6 @@ mysql>
 
 ## TODO
 - how do I use [Service Connection Policy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/network_connectivity_service_connection_policy) to make PSC easier?
-- connection pooling
 - backups/maintenance window
 - how to use integration features with other GCP services (i.e. Vertex AI)
 - SQL Server support (maybe)

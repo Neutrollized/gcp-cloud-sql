@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.0] - 2025-??-??
+### Added
+- Managed Connection Pool support
+- Variable `connection_pooling_enabled` (default: `false`)
+- Variable `connection_pooling_flags` (default: `[]`)
+### Changed
+- Variable `machine_type` changed to `machine_tiers` to better reflect the different naming formats
+### Fixed
+- Output locals errors when public IP and/or PSC not enabled
+
 ## [0.3.0] - 2025-08-01
 ### Added
 - Private Service Connect (PSC) support (sample Terraform file: `psc_sample.tf`)

@@ -19,7 +19,7 @@ resource "google_sql_database_instance" "main" {
     # i.e. "db-f1-micro"
     # There's more high-perf tiers that are named differently,
     # see the full list with `gcloud sql tiers list`
-    tier                  = "db-${var.machine_type}"
+    tier                  = var.machine_tier
     edition               = var.edition
     connector_enforcement = var.connector_enforcement
 
@@ -62,8 +62,19 @@ resource "google_sql_database_instance" "main" {
           expiration_time = contains(keys(authorized_networks.value), "expiration_time") ? authorized_networks.value["expiration_time"] : null
         }
       }
-
     }
+
+    connection_pool_config {
+      connection_pooling_enabled = var.connection_pooling_enabled
+      dynamic "flags" {
+        for_each = var.connection_pooling_enabled ? var.connection_pooling_flags : []
+        content {
+          name  = flags.value["name"]
+          value = flags.value["value"]
+        }
+      }
+    }
+
   }
 
   # need to set and "terraform apply" before you can delete
@@ -74,6 +85,10 @@ resource "google_sql_database_instance" "main" {
     precondition {
       condition     = var.edition == "ENTERPRISE" || var.edition == "ENTERPRISE_PLUS" && contains(["MYSQL_8_0", "MYSQL_8_4", "POSTGRES_12", "POSTGRES_13", "POSTGRES_14", "POSTGRES_15", "POSTGRES_16", "POSTGRES_17"], var.db_version)
       error_message = "Selected db_version is not supported by ENTERPRISE_PLUS edition"
+    }
+    precondition {
+      condition     = var.edition == "ENTERPRISE" && var.connection_pooling_enabled == false || var.edition == "ENTERPRISE_PLUS"
+      error_message = "Managed Connection Pooling is only supported by ENTERPRISE_PLUS edition"
     }
     precondition {
       condition     = (startswith(var.disk_type, "PD_") && var.disk_size >= 10) || (startswith(var.disk_type, "HYPERDISK_") && var.disk_size >= 20)
