@@ -5,7 +5,10 @@ resource "random_pet" "sql_instance_suffix" {
   separator = "-"
 }
 
+#-------------------------------
+# Cloud SQL instance
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance
+#-------------------------------
 resource "google_sql_database_instance" "main" {
   name             = "${var.sql_instance_name}-${random_pet.sql_instance_suffix.id}"
   database_version = var.db_version
@@ -104,6 +107,10 @@ resource "google_sql_database_instance" "main" {
   }
 }
 
+
+#---------------------
+# database
+#---------------------
 resource "google_sql_database" "database" {
   name     = var.sql_database_name
   instance = google_sql_database_instance.main.name
