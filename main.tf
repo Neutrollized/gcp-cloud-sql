@@ -78,6 +78,34 @@ resource "google_sql_database_instance" "main" {
       }
     }
 
+    retain_backups_on_delete = var.backup_enabled ? var.retain_backups_on_delete : null
+    dynamic "backup_configuration" {
+      for_each = var.backup_enabled ? [1] : []
+      content {
+        enabled = var.backup_enabled
+
+        binary_log_enabled             = startswith(var.db_version, "MYSQL") ? var.binary_log_enabled : false
+        point_in_time_recovery_enabled = startswith(var.db_version, "POSTGRES") ? var.pitr_enabled : false
+
+        start_time                     = var.backup_start_time
+        location                       = var.backup_location != null ? var.backup_location : var.region
+        transaction_log_retention_days = var.transaction_log_retention_days # postgres setting
+
+        dynamic "backup_retention_settings" {
+          for_each = var.retained_backups != null ? [1] : []
+          content {
+            retained_backups = var.retained_backups
+            retention_unit   = "COUNT"
+          }
+        }
+      }
+    }
+
+    maintenance_window {
+      day          = var.maintenance_window_day
+      hour         = var.maintenance_window_hour
+      update_track = var.maintenance_window_update_track
+    }
   }
 
   # need to set and "terraform apply" before you can delete
@@ -94,6 +122,10 @@ resource "google_sql_database_instance" "main" {
       error_message = "Managed Connection Pooling is only supported by ENTERPRISE_PLUS edition"
     }
     precondition {
+      condition     = var.edition == "ENTERPRISE" && var.transaction_log_retention_days >= 1 && var.transaction_log_retention_days <= 7 || var.edition == "ENTERPRISE_PLUS" && var.transaction_log_retention_days >= 1 && var.transaction_log_retention_days <= 35
+      error_message = "The number days you can set for transaction log retention is 1-7 for ENTERPRISE edition and 1-35 for ENTERPRISE_PLUS edition"
+    }
+    precondition {
       condition     = (startswith(var.disk_type, "PD_") && var.disk_size >= 10) || (startswith(var.disk_type, "HYPERDISK_") && var.disk_size >= 20)
       error_message = "If disk type is a HYPERDISK, the disk_size should be at least 20GB"
     }
@@ -102,6 +134,7 @@ resource "google_sql_database_instance" "main" {
       error_message = "Your specified disk_autoresize_limit should be greater than your disk_size"
     }
     ignore_changes = [
+      settings[0].connection_pool_config,
       settings[0].disk_size,
     ]
   }
@@ -114,4 +147,8 @@ resource "google_sql_database_instance" "main" {
 resource "google_sql_database" "database" {
   name     = var.sql_database_name
   instance = google_sql_database_instance.main.name
+
+  depends_on = [
+    google_sql_user.db_user,
+  ]
 }

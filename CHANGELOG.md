@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.0] - 2025-08-04
+### Added
+- Backup configuration
+- Variable `retain_backups_on_delete` (default: `false`). If backups are on-demand, then user has the responsibility to delete, otherwise they will be retained based on the retention policy
+- Maintenance window configuration
+### Fixed
+- Added `depends_on` for `google_sql_user` and `google_sql_database` to avoid errors when destroying resources
+
 ## [0.4.0] - 2025-08-02
 ### Added
 - Managed Connection Pool support

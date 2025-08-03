@@ -32,4 +32,8 @@ resource "google_sql_user" "db_user" {
   instance            = google_sql_database_instance.main.name
   password_wo         = ephemeral.random_password.db_password.result
   password_wo_version = google_secret_manager_secret_version.db_password.secret_data_wo_version
+
+  depends_on = [
+    google_sql_database_instance.main,
+  ]
 }

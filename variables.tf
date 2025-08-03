@@ -228,3 +228,104 @@ variable "connection_pooling_flags" {
     #    }
   ]
 }
+
+
+#---------------------------------------------
+# backup & maintenance configuration
+#---------------------------------------------
+variable "retain_backups_on_delete" {
+  description = "Whether backups are retained after instance is deleted based on backup retention settings"
+  type        = bool
+  default     = false
+}
+
+variable "backup_enabled" {
+  description = "Whether backup configuration is enabled"
+  type        = bool
+  default     = false
+}
+
+variable "binary_log_enabled" {
+  description = "Whether binary logging is enabled. This is for MySQL databases only!"
+  type        = bool
+  default     = false
+}
+
+variable "pitr_enabled" {
+  description = "Whether point-in-time recovery is enabled. This is for PostgreSQL databases only!"
+  type        = bool
+  default     = false
+}
+
+variable "backup_start_time" {
+  description = "The daily schedule time in HH:MM format (e.g., 08:30, 23:59). HH must be 00-23, MM must be 00-59."
+  type        = string
+  #default     = "02:00"
+  default = null
+
+  validation {
+    # This regex ensures:
+    # ^          - Start of the string
+    # (?:        - Non-capturing group for hours
+    #   [01]\d   - 00-19
+    #   |        - OR
+    #   2[0-3]   - 20-23
+    # )          - End of hours group
+    # :          - Literal colon separator
+    # [0-5]\d    - 00-59 for minutes
+    # $          - End of the string
+    condition     = var.backup_start_time == null || can(regex("^(?:[01]\\d|2[0-3]):[0-5]\\d$", var.backup_start_time))
+    error_message = "The 'daily_schedule_time' must be in HH:MM format. HH must be between 00 and 23, and MM must be between 00 and 59."
+  }
+}
+
+variable "backup_location" {
+  description = "Region where backup will be stored.  If none provided, will default to the same region as the Cloud SQL instance"
+  type        = string
+  default     = null
+}
+
+variable "transaction_log_retention_days" {
+  description = "The number of days transaction logs are retained for PITR restore (1-7). For ENTERPRISE_PLUS editions, the number of days can be up to 35"
+  type        = number
+  default     = 7
+}
+
+variable "retained_backups" {
+  description = "The number of backups retained. Excess are deleted"
+  type        = number
+  default     = null
+}
+
+variable "maintenance_window_day" {
+  description = "Day to roll out maintenance update. Starts on Monday"
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.maintenance_window_day >= 1 && var.maintenance_window_day <= 7
+    error_message = "Accepted values are '1-7', starting on Monday"
+  }
+}
+
+variable "maintenance_window_hour" {
+  description = "Hour to roll out maintance update"
+  type        = number
+  default     = 4
+
+  validation {
+    condition     = var.maintenance_window_hour >= 0 && var.maintenance_window_hour <= 23
+    error_message = "Accepted values are '0-23'"
+  }
+}
+
+variable "maintenance_window_update_track" {
+  description = "Controls how much advance notification you receive before updates are rolled out. 'canary' is 7-14 days, 'stable' is 15-21 days, and 'week5' is 35-42 days."
+  type        = string
+  default     = "stable"
+
+  validation {
+    condition     = contains(["canary", "stable", "week5"], var.maintenance_window_update_track)
+    error_message = "Accepted values are 'canary', 'stable', or 'week5'"
+  }
+}

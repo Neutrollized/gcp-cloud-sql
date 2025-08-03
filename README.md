@@ -2,9 +2,9 @@
 
 [Cloud SQL documentation](https://cloud.google.com/sql/docs/introduction)
 
-Deploying GCP Cloud SQL with Terraform.  Learn about the different configuration, security, and connectivity options.  I don't focus on a lot of the enterprise-level settings, and is mostly aimed at educating developers who wants/needs to spin up a SQL database instance for development or testing purposes.
+Deploying GCP Cloud SQL with Terraform.  Learn about the different configuration, security, and connectivity options.  I don't focus on a lot of the enterprise-level settings, and is mostly aimed at educating developers who wants/needs to spin up a SQL database instance for development or testing purposes. If you want to compare this with the different Cloud SQL "presets" in the GCP console, this would be closer to a "Sandbox".
 
-Currently only for MySQL and PostgreSQL (I don't know enough about SQL Server to make usage or configuration recommendations -- sorry, Microsoft)
+**NOTE**: currently only for MySQL and PostgreSQL (I don't know enough about SQL Server to make usage or configuration recommendations -- sorry, Microsoft)
 
 Core resources used:
 - [Cloud SQL DB Instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/sql_database_instance)
@@ -130,6 +130,5 @@ mysql>
 
 ## TODO
 - how do I use [Service Connection Policy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/network_connectivity_service_connection_policy) to make PSC easier?
-- backups/maintenance window
 - how to use integration features with other GCP services (i.e. Vertex AI)
 - SQL Server support (maybe)

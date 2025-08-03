@@ -17,6 +17,10 @@ output "change_user_password" {
   value = "gcloud sql users set-password ${google_sql_user.db_user.name} --instance=${google_sql_database_instance.main.name} --prompt-for-password"
 }
 
+output "cloud_sql_connection_name" {
+  value = google_sql_database_instance.main.connection_name
+}
+
 output "cloud_sql_psc_svcattachment" {
   value = length(var.allowed_consumer_projects) > 0 ? google_sql_database_instance.main.psc_service_attachment_link : "N/A - Private Service Connect not enabled"
 }
