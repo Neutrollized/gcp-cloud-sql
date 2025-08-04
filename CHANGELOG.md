@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.5.0] - 2025-08-04
 ### Added
-- Backup configuration
+- [Backups](https://cloud.google.com/sql/docs/postgres/backup-recovery/backups) configuration
 - Variable `retain_backups_on_delete` (default: `false`). If backups are on-demand, then user has the responsibility to delete, otherwise they will be retained based on the retention policy
-- Maintenance window configuration
+- [Maintenance window](https://cloud.google.com/sql/docs/postgres/set-maintenance-window) configuration
 ### Fixed
 - Added `depends_on` for `google_sql_user` and `google_sql_database` to avoid errors when destroying resources
 
