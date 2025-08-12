@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.1] - 2025-08-12
+### Added
+- Output Cloud SQL instance DNS name
+
 ## [0.5.0] - 2025-08-04
 ### Added
 - [Backups](https://cloud.google.com/sql/docs/postgres/backup-recovery/backups) configuration

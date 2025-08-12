@@ -21,6 +21,10 @@ output "cloud_sql_connection_name" {
   value = google_sql_database_instance.main.connection_name
 }
 
+output "cloud_sql_dns_name" {
+  value = google_sql_database_instance.main.dns_name
+}
+
 output "cloud_sql_psc_svcattachment" {
   value = length(var.allowed_consumer_projects) > 0 ? google_sql_database_instance.main.psc_service_attachment_link : "N/A - Private Service Connect not enabled"
 }
