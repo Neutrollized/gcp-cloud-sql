@@ -36,3 +36,10 @@ terraform.tfvars
 # Miscellaneous
 *.swp
 *.DS_Store
+
+# ADK stuff
+.python-version
+**/__pycache__
+**/.pytest_cache
+**/.env
+**/.adk

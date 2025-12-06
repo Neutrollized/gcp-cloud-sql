@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-12-06
+### Added
+- `examples/mcp-toolbox`
+### Changed
+- Updated **google** and **google-beta** providers from `~> 6.45` to `~> 7.12` ([Upgrade Guide](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/version_7_upgrade))
 
 ## [0.5.1] - 2025-08-12
 ### Added
