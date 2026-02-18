@@ -14,7 +14,7 @@ resource "google_compute_address" "default" {
   name         = "psc-compute-address-${google_sql_database_instance.main.name}"
   region       = var.region
   address_type = "INTERNAL"
-  subnetwork   = data.google_compute_subnetwork.default_subnet.name
+  subnetwork   = data.google_compute_subnetwork.private_subnet.name
 }
 
 resource "google_compute_forwarding_rule" "default" {
@@ -23,7 +23,7 @@ resource "google_compute_forwarding_rule" "default" {
   region                  = var.region
   load_balancing_scheme   = ""
   target                  = google_sql_database_instance.main.psc_service_attachment_link
-  network                 = data.google_compute_network.default_network.name
+  network                 = data.google_compute_network.private_network.name
   ip_address              = google_compute_address.default[count.index].self_link
   allow_psc_global_access = true # clients from all regions can access this fwding rule
 }
@@ -44,7 +44,7 @@ resource "google_dns_managed_zone" "private_zone" {
 
   private_visibility_config {
     networks {
-      network_url = data.google_compute_network.default_network.id
+      network_url = data.google_compute_network.private_network.id
     }
   }
 }

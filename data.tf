@@ -1,10 +1,10 @@
-data "google_compute_network" "default_network" {
-  name    = "default"
+data "google_compute_network" "private_network" {
+  name    = var.private_network_name
   project = var.project_id
 }
 
-data "google_compute_subnetwork" "default_subnet" {
-  name    = "default"
+data "google_compute_subnetwork" "private_subnet" {
+  name    = var.private_subnet_name
   region  = var.region
   project = var.project_id
 }

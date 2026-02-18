@@ -19,6 +19,22 @@ variable "zone" {
 }
 
 
+#--------------------------
+# Private networking
+#--------------------------
+variable "private_network_name" {
+  description = "Private GCP network to connect to"
+  type        = string
+  default     = "default"
+}
+
+variable "private_subnet_name" {
+  description = "Private GCP subnetwork connect to for PSC"
+  type        = string
+  default     = "default"
+}
+
+
 #-----------------------
 # Cloud SQL user
 #-----------------------

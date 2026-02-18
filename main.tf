@@ -1,3 +1,16 @@
+resource "google_project_service" "sql-component" {
+  service = "sql-component.googleapis.com"
+}
+
+resource "google_project_service" "sqladmin" {
+  service = "sqladmin.googleapis.com"
+}
+
+resource "google_project_service" "secretmanager" {
+  service = "secretmanager.googleapis.com"
+}
+
+
 # need to generate a unique suffix for Cloud SQL sql instance 
 # as the name cannot be reused for ~7 days after deletion
 resource "random_pet" "sql_instance_suffix" {
@@ -44,7 +57,7 @@ resource "google_sql_database_instance" "main" {
 
     ip_configuration {
       ipv4_enabled                                  = var.ipv4_enabled
-      private_network                               = data.google_compute_network.default_network.id
+      private_network                               = data.google_compute_network.private_network.id
       ssl_mode                                      = var.ssl_mode
       enable_private_path_for_google_cloud_services = var.enable_private_path_for_gcp_services
 
